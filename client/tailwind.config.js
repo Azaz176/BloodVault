@@ -5,14 +5,16 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors:{
-        'primary':"#0C1844"
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
+      colors: {
+        'primary': "#0C1844"
       }
     },
   },
   plugins: [],
-  corePlugins:{
-    preflight:false
+  corePlugins: {
+    preflight: false
   },
 }
-
