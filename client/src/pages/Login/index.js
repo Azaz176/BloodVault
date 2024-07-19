@@ -1,13 +1,27 @@
 import React from "react";
-import { Button, Form, Input, Radio } from "antd";
-import { Link } from "react-router-dom";
-import TextArea from "antd/es/input/TextArea";
-
+import { Button, Form, Input, Radio, message} from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { LoginUser } from "../../apicalls/users";
 const Login = () => {
   const [type, setType] = React.useState("donor");
+  const navigate= useNavigate()
 
-  const onFinish = (values) => {
-    console.log('Received values:', values);
+  const onFinish = async(values) => {
+    try {
+     // console.log("Form values:", values);
+      const response = await LoginUser(values);
+     // console.log("API Response:", response);
+      if (response.success) {
+        message.success(response.message);
+        localStorage.setItem("token", response.data)
+        navigate("/")
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      message.error(error.message);
+    }
   };
 
   return (

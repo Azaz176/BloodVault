@@ -5,7 +5,13 @@ export const axiosInstance = async (method, endpoint, payload) => {
       method,
       url: endpoint,
       data: payload,
-    });
+    },
+    {
+      headers:{
+        authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    }
+  );
     return response.data; // Ensure the response data is returned
   } catch (error) {
     console.error('Axios error:', error.response || error);
