@@ -8,9 +8,6 @@ if (!mongoURL) {
   process.exit(1);  // Exit the process with an error code
 }
 
-mongoose.connect(mongoURL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(mongoURL)
 .then(() => console.log("MongoDB connected successfully"))
 .catch(err => console.error("MongoDB connection error:", err.message));
