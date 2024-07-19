@@ -1,14 +1,31 @@
 import React from "react";
-import { Button, Form, Input, Radio } from "antd";
+import { Button, Form, Input, Radio, message } from "antd";
 import { Link } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
+import { RegisterUser } from "../../apicalls/users";
 
 const Register = () => {
   const [type, setType] = React.useState("donor");
 
-  const onFinish = (values) => {
-    console.log('Received values:', values);
+  const onFinish = async (values) => {
+    try {
+      console.log("Form values:", values);
+      const response = await RegisterUser({
+        ...values,
+        userType: type,
+      });
+      console.log("API Response:", response);
+      if (response.success) {
+        message.success(response.message);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      message.error(error.message);
+    }
   };
+  
 
   return (
     <div className="flex h-screen items-center justify-center bg-primary">
@@ -22,18 +39,18 @@ const Register = () => {
           <hr />
         </h1>
 
-        <Form.Item className="col-span-2 -mt-5 p-0" label="Register As">
+        
           <Radio.Group onChange={(e) => setType(e.target.value)} value={type}
             className="col-span-2">
             <Radio value="donor">Donor</Radio>
             <Radio value="hospital">Hospital</Radio>
             <Radio value="organization">Organization</Radio>
           </Radio.Group>
-        </Form.Item>
+       
 
         {type === "donor" && (
           <>
-            <Form.Item label="Donor Name" name="name" rules={[{ required: true, message: 'Please input your name!' }]}>
+            <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input your name!' }]}>
               <Input />
             </Form.Item>
             <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
@@ -50,7 +67,7 @@ const Register = () => {
 
         {type === "hospital" && (
           <>
-            <Form.Item label="Hospital Name" name="hospitalName" rules={[{ required: true, message: 'Please input the hospital name!' }]}>
+            <Form.Item label="Name" name="hospitalName" rules={[{ required: true, message: 'Please input the hospital name!' }]}>
               <Input />
             </Form.Item>
             <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input the email!' }]}>
@@ -69,7 +86,7 @@ const Register = () => {
             <Form.Item label="Password" name="password" type="password" rules={[{ required: true, message: 'Please input the password!' }]}>
               <Input type="password" />
             </Form.Item>
-            <Form.Item label="Address" name="Address" className="col-span-2">
+            <Form.Item label="address" name="address" className="col-span-2">
               <TextArea/>
             </Form.Item>
           </>
@@ -77,7 +94,7 @@ const Register = () => {
 
         {type === "organization" && (
           <>
-            <Form.Item label="Organization Name" name="organizationName" rules={[{ required: true, message: 'Please input the organization name!' }]}>
+            <Form.Item label="Name" name="organizationName" rules={[{ required: true, message: 'Please input the organization name!' }]}>
               <Input />
             </Form.Item>
             <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input the email!' }]}>
@@ -95,7 +112,7 @@ const Register = () => {
             <Form.Item label="Password" name="password" type="password" rules={[{ required: true, message: 'Please input the password!' }]}>
               <Input type="password" />
             </Form.Item>
-            <Form.Item label="Address" name="Address" className="col-span-2">
+            <Form.Item label="address" name="address" className="col-span-2">
               <TextArea/>
             </Form.Item>
           </>
