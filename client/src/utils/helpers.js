@@ -1,18 +1,25 @@
-export const getLoggedInUserName=(user)=>{
-    if(user.userType==="donar"){
-        return user.name
-    }else if(user.userType==="hospital"){
-        return user.hospitalName
-    }else if(user.userType==="organization"){
-        return user.organizationName
+export const getLoggedInUserName = (user) => {
+    if (!user || !user.userType) {
+        return "Unknown User"; // Handle case where user or userType is undefined
     }
-}
 
-export const getAndInputValidation= ()=>{
-    return[
+    switch (user.userType) {
+        case "donor":
+            return user.name;
+        case "hospital":
+            return user.hospitalName;
+        case "organization":
+            return user.organizationName;
+        default:
+            return "Unknown User Type"; // Handle unknown user types
+    }
+};
+
+export const getAndInputValidation = () => {
+    return [
         {
-            required:true,
-            message:"Required"
-        }
-    ]
-}
+            required: true,
+            message: "Required",
+        },
+    ];
+};
