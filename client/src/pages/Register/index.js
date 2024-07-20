@@ -1,11 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Button, Form, Input, Radio, message } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 import { RegisterUser } from "../../apicalls/users";
 
 const Register = () => {
   const [type, setType] = React.useState("donor");
+  const navigate= useNavigate()
 
   const onFinish = async (values) => {
     try {
@@ -26,6 +27,11 @@ const Register = () => {
     }
   };
   
+  useEffect(()=>{
+    if(localStorage.getItem("token")){
+      navigate("/")
+    }
+  }, [])
 
   return (
     <div className="flex h-screen items-center justify-center bg-primary">

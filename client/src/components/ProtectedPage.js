@@ -1,15 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GetCurrentUser } from '../apicalls/users'
 import { message} from "antd";
+import {useNavigate} from "react-router-dom"
+import { getLoggedInUserName } from '../utils/helpers';
 
 
 function ProtectedPage({children}) {
-
+    const navigate= useNavigate()
+    const [currentUser, setCurrentUser]=useState(null)
     const getCurrentUser=async()=>{
         try {
             const response= await GetCurrentUser()
             if(response.success){
                 message.success(response.message)
+                setCurrentUser(response.data)
             } else{
                 throw new Error(response.message)
             }
@@ -19,10 +23,15 @@ function ProtectedPage({children}) {
         }
     }
     useEffect(()=>{
-        getCurrentUser();
+
+        if(localStorage.getItem("token"))
+            getCurrentUser();
+        else
+            navigate("/login")
     }, [])
   return (
-    <div>
+    currentUser && <div>
+        <h1>welcome{getLoggedInUserName(currentUser)}</h1>
         {children}
     </div>
   )
