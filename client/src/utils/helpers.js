@@ -7,3 +7,12 @@ export const getLoggedInUserName=(user)=>{
         return user.organizationName
     }
 }
+
+export const getAndInputValidation= ()=>{
+    return[
+        {
+            required:true,
+            message:"Required"
+        }
+    ]
+}

@@ -1,34 +1,40 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, Radio, message} from "antd";
+import { Button, Form, Input, Radio, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "../../apicalls/users";
+import { useDispatch } from "react-redux";
+import { SetLoading } from "../../redux/loadersSlice";
+import { getAndInputValidation } from "../../utils/helpers";
 const Login = () => {
   const [type, setType] = React.useState("donor");
-  const navigate= useNavigate()
-
-  const onFinish = async(values) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const onFinish = async (values) => {
     try {
-     // console.log("Form values:", values);
+      dispatch(SetLoading(true));
+      // console.log("Form values:", values);
       const response = await LoginUser(values);
-     // console.log("API Response:", response);
+      // console.log("API Response:", response);
+      dispatch(SetLoading(false));
       if (response.success) {
         message.success(response.message);
-        localStorage.setItem("token", response.data)
-        navigate("/")
+        localStorage.setItem("token", response.data);
+        navigate("/");
       } else {
         throw new Error(response.message);
       }
     } catch (error) {
+      dispatch(SetLoading(false));
       console.error("Error:", error);
       message.error(error.message);
     }
   };
 
-  useEffect(()=>{
-    if(localStorage.getItem("token")){
-      navigate("/")
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
     }
-  }, [])
+  }, []);
 
   return (
     <div className="flex h-screen items-center justify-center bg-primary">
@@ -43,37 +49,40 @@ const Login = () => {
         </h1>
 
         <Form.Item className="-mt-5 p-0" label="Login As">
-          <Radio.Group onChange={(e) => setType(e.target.value)} value={type}
-            className="col-span-2">
+          <Radio.Group
+            onChange={(e) => setType(e.target.value)}
+            value={type}
+            className="col-span-2"
+          >
             <Radio value="donor">Donor</Radio>
             <Radio value="hospital">Hospital</Radio>
             <Radio value="organization">Organization</Radio>
           </Radio.Group>
         </Form.Item>
 
-        
-           
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
-              <Input />
-            </Form.Item>
-            
-            <Form.Item label="Password" name="password" type="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-              <Input type="password" />
-            </Form.Item>
-  
+        <Form.Item label="Email" name="email" rules={getAndInputValidation()}>
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          type="password"
+          rules={getAndInputValidation()}
+        >
+          <Input type="password" />
+        </Form.Item>
+
         <Button type="primary" className="bg-blue-900" htmlType="submit">
           Login
         </Button>
 
-        <Link
-          to="/register"
-          className="text-center text-blue-900 font-bold "
-        >
+        <Link to="/register" className="text-center text-blue-900 font-bold ">
           Don't have an account? Register
         </Link>
       </Form>
     </div>
   );
-}
+};
 
 export default Login;
