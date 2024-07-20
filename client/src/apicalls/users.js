@@ -18,4 +18,8 @@ export const LoginUser= async (payload)=>{
         throw error; // Rethrow the error to handle it in the component
       }
 }
+export const GetCurrentUser=async ()=>{
+  const response = await axiosInstance('get', '/api/users/get-current-user')
+  return response
+}
 
