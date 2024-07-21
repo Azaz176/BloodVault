@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { Form, Input, Modal, Radio, Select, message } from "antd";
 import { getAndInputValidation } from "../../../utils/helpers";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SetLoading } from "../../../redux/loadersSlice";
 import { AddInventory } from "../../../apicalls/inventory";
 
 function InventoryForm({ open, setOpen, reloadData }) {
+  const {currentUser}= useSelector(state=>state.users)
   const [form] = Form.useForm();
-  const [InventoryType, setInventoryType] = useState("in");
+  const [inventoryType, setInventoryType] = useState("in");
   const dispatch=useDispatch()
   const onFinish= async (values)=>{
     try {
         dispatch(SetLoading(true))
         const response= await AddInventory({
             ...values,
-            InventoryType
+            inventoryType,
+            organization:currentUser._id
         })
         dispatch(SetLoading(false))
         if(response.success){
@@ -42,7 +44,7 @@ function InventoryForm({ open, setOpen, reloadData }) {
       <Form layout="vertical" className="flex flex-col gap-3" form={form} onFinish={onFinish}>
         <Form.Item label="Inventory Type">
           <Radio.Group
-            value={InventoryType}
+            value={inventoryType}
             onChange={(e) => setInventoryType(e.target.value)}
           >
             <Radio value="in">In</Radio>
@@ -68,7 +70,7 @@ function InventoryForm({ open, setOpen, reloadData }) {
         </Form.Item>
 
         <Form.Item
-          label={InventoryType === "in" ? "Donor Email" : "Hospital Email"}
+          label={inventoryType === "in" ? "Donor Email" : "Hospital Email"}
           name="email"
           rules={getAndInputValidation()}
         >
