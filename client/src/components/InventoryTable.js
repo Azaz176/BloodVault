@@ -1,16 +1,14 @@
-import { Button, message, Table } from "antd";
 import React from "react";
-import InventoryForm from "./InventoryForm";
+import { GetInventoryWithFilters } from "../apicalls/inventory";
 import { useDispatch } from "react-redux";
-import { GetInventory } from "../../../apicalls/inventory";
-import { SetLoading } from "../../../redux/loadersSlice";
-import { getDateFormat } from "../../../utils/helpers";
+import { getDateFormat } from "../utils/helpers";
+import { SetLoading } from "../redux/loadersSlice";
+import { message, Table } from "antd";
 
-function Inventory() {
+function InventoryTable({ filters, userType }) {
   const [data, setData] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-
   const columns = [
     {
       title: "Inventory Type",
@@ -30,10 +28,7 @@ function Inventory() {
     {
       title: "Reference",
       dataIndex: "reference",
-      render: (text, record) => {
-        if (record.inventoryType === "in") return record.donor.name;
-        else return record.hospital.hospitalName;
-      },
+      render: (text, record) =>record.organization.organizationName
     },
     {
       title: "Date",
@@ -45,7 +40,7 @@ function Inventory() {
   const getData = async () => {
     try {
       dispatch(SetLoading(true));
-      const response = await GetInventory();
+      const response = await GetInventoryWithFilters(filters);
       dispatch(SetLoading(false));
       console.log(response);
       if (response.success) {
@@ -65,19 +60,9 @@ function Inventory() {
 
   return (
     <div>
-      <div className="flex justify-end">
-        <Button type="default" onClick={() => setOpen(true)}>
-          Add Inventory
-        </Button>
-      </div>
-
       <Table columns={columns} dataSource={data} className="mt-3" />
-      {open && <InventoryForm open={open} setOpen={setOpen} 
-      reloadData={getData}/>}
     </div>
   );
-
-  
 }
 
-export default Inventory;
+export default InventoryTable;
