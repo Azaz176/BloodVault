@@ -4,13 +4,16 @@ import {
   GetAllOrganizationsOfHospital,
 } from "../../../apicalls/users";
 import { SetLoading } from "../../../redux/loadersSlice";
-import { useDispatch } from "react-redux";
-import { message, Table } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { message, Modal, Table } from "antd";
 import { getDateFormat } from "../../../utils/helpers";
+import InventoryTable from "../../../components/InventoryTable";
 
 function Organizations({ userType }) {
+  const [showHistoryModal, setShowHistoryModal] = React.useState(false);
+  const { currentUser } = useSelector((state) => state.users);
   const [data, setData] = React.useState([]);
-
+  const [selectedOrganization, setSelectedOrganization] = React.useState(null);
   const dispatch = useDispatch();
 
   const getData = async () => {
@@ -20,17 +23,16 @@ function Organizations({ userType }) {
         userType === "donor"
           ? await GetAllOrganizationsOfDonor()
           : await GetAllOrganizationsOfHospital();
-      console.log(response);
       dispatch(SetLoading(false));
-      
+
       if (response.success) {
         setData(response.data);
       } else {
         throw new Error(response.message);
       }
     } catch (error) {
-      message.error(error.message);
       dispatch(SetLoading(false));
+      message.error(error.message);
     }
   };
 
@@ -56,6 +58,21 @@ function Organizations({ userType }) {
       dataIndex: "createdAt",
       render: (text) => getDateFormat(text),
     },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (text, record) => (
+        <span
+          className="underline text-md cursor-pointer"
+          onClick={() => {
+            setSelectedOrganization(record);
+            setShowHistoryModal(true);
+          }}
+        >
+          History
+        </span>
+      ),
+    },
   ];
 
   React.useEffect(() => {
@@ -65,6 +82,26 @@ function Organizations({ userType }) {
   return (
     <div>
       <Table columns={columns} dataSource={data} />
+
+      {showHistoryModal && (
+        <Modal
+          title={
+            userType === "donor" ? "Donation History" : "Collection History"
+          }
+          centered
+          open={showHistoryModal}
+          onCancel={() => setShowHistoryModal(false)}
+          onClose={() => setShowHistoryModal(false)}
+          width={1000}
+        >
+          <InventoryTable
+            filters={{
+              Organization: selectedOrganization._id,
+              [userType]: currentUser._id,
+            }}
+          />
+        </Modal>
+      )}
     </div>
   );
 }
