@@ -36,3 +36,7 @@ i{
 .ant-form-item-labe{
   padding: 0 !important;
 }
+
+table{
+  border: 2px solid #9f9f9f !important;
+}

@@ -6,9 +6,6 @@ const authMiddleware = require("../middlewares/authMiddleware.js");
 // Add inventory
 router.post("/add", authMiddleware, async (req, res) => {
   try {
-    // Log the entire request body
-    console.log("Request Body:", req.body);
-
     // Validate email
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
@@ -31,15 +28,13 @@ router.post("/add", authMiddleware, async (req, res) => {
       req.body.donor = user._id;
     }
 
-    // Log the modified request body before saving
-    console.log("Modified Request Body:", req.body);
 
     // Add inventory
     const inventory = new Inventory(req.body);
     await inventory.save();
     return res.send({ success: true, message: "Inventory added successfully" });
   } catch (error) {
-    console.log(error);
+   // console.log(error);
 
     return res.send({
       success: false,
@@ -48,4 +43,20 @@ router.post("/add", authMiddleware, async (req, res) => {
   }
 });
 
+// get Inventory
+router.get("/get", authMiddleware, async (req, res) => {
+  try {
+    const inventory = await Inventory.find({ organization: req.body.userId }).populate("donor").populate("hospital");
+    //console.log(inventory)
+    return res.send({
+      success: true,
+      data: inventory,
+    });
+  } catch (error) {
+    return res.send({
+      success: false,
+      message: error.message,
+    });
+  }
+});
 module.exports = router;

@@ -1,3 +1,4 @@
+import moment from 'moment'
 export const getLoggedInUserName = (user) => {
     if (!user || !user.userType) {
         return "Unknown User"; // Handle case where user or userType is undefined
@@ -23,3 +24,7 @@ export const getAndInputValidation = () => {
         },
     ];
 };
+
+export const getDateFormat= (date)=>{
+    return moment(date).format("DD MMM YYYY hh:mm A")
+}
