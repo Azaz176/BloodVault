@@ -13,7 +13,10 @@ const Login = () => {
     try {
       dispatch(SetLoading(true));
       // console.log("Form values:", values);
-      const response = await LoginUser(values);
+      const response = await LoginUser({
+        ...values,
+        userType: type,
+      });
       // console.log("API Response:", response);
       dispatch(SetLoading(false));
       if (response.success) {
