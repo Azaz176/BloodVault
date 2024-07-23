@@ -110,7 +110,9 @@ router.get("/get", authMiddleware, async (req, res) => {
 
 router.post("/filter", authMiddleware, async (req, res) => {
   try {
-    const inventory = await Inventory.find(req.body.filters).sort({createdAt: -1})
+    const filters = req.body.filters;
+    //console.log('Received filters:', filters);
+    const inventory = await Inventory.find(filters).sort({createdAt: -1})
       .populate("donor")
       .populate("hospital")
       .populate("organization");
@@ -120,6 +122,7 @@ router.post("/filter", authMiddleware, async (req, res) => {
       data: inventory,
     });
   } catch (error) {
+    //console.error('Error fetching inventory data:', error);
     return res.send({
       success: false,
       message: error.message,

@@ -19,13 +19,17 @@ function Organizations({ userType }) {
   const getData = async () => {
     try {
       dispatch(SetLoading(true));
-      const response =
-        userType === "donor"
-          ? await GetAllOrganizationsOfDonor()
-          : await GetAllOrganizationsOfHospital();
+      //console.log("Fetching data for user type:", userType); // Log user type
+      let response = null;
+      if (userType === "hospital") {
+        response = await GetAllOrganizationsOfHospital();
+      } else {
+        response = await GetAllOrganizationsOfDonor();
+      }
       dispatch(SetLoading(false));
 
       if (response.success) {
+       // console.log("API Dataaaa:", response.data); // Log response data
         setData(response.data);
       } else {
         throw new Error(response.message);
@@ -65,6 +69,7 @@ function Organizations({ userType }) {
         <span
           className="underline text-md cursor-pointer"
           onClick={() => {
+            //console.log("Selected Organization:", record);
             setSelectedOrganization(record);
             setShowHistoryModal(true);
           }}
@@ -84,24 +89,25 @@ function Organizations({ userType }) {
       <Table columns={columns} dataSource={data} />
 
       {showHistoryModal && (
-        <Modal
-          title={
-            userType === "donor" ? "Donation History" : "Collection History"
-          }
-          centered
-          open={showHistoryModal}
-          onCancel={() => setShowHistoryModal(false)}
-          onClose={() => setShowHistoryModal(false)}
-          width={1000}
-        >
-          <InventoryTable
-            filters={{
-              Organization: selectedOrganization._id,
-              [userType]: currentUser._id,
-            }}
-          />
-        </Modal>
-      )}
+  <Modal
+    title={`${
+      userType === "donor" ? "Donations History" : "Consumptions History"
+    } In ${selectedOrganization.organizationName}`}
+    centered
+    open={showHistoryModal}
+    onCancel={() => setShowHistoryModal(false)}
+    onOk={() => setShowHistoryModal(false)}
+    width={1000}
+  >
+    <InventoryTable
+      filters={{
+        organization: selectedOrganization?._id,
+        [userType]: currentUser._id,
+      }}
+    />
+  </Modal>
+)}
+
     </div>
   );
 }
