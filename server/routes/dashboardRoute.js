@@ -16,25 +16,7 @@ router.get("/blood-groups-data", authMiddleware, async (req, res) => {
           {
             $match: {
               bloodGroup: bloodGroup,
-              type: "in",
-              organization,
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              total: {
-                $num: "$quantity",
-              },
-            },
-          },
-        ]);
-
-        const totalOut = await Inventory.aggregate([
-          {
-            $match: {
-              bloodGroup: bloodGroup,
-              type: "out",
+              inventoryType: "in",
               organization,
             },
           },
@@ -48,19 +30,38 @@ router.get("/blood-groups-data", authMiddleware, async (req, res) => {
           },
         ]);
 
-        const available= totalIn[0]?.total || 0 - total[0]?. total || 0
+        const totalOut = await Inventory.aggregate([
+          {
+            $match: {
+              bloodGroup: bloodGroup,
+              inventoryType: "out",
+              organization,
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$quantity",
+              },
+            },
+          },
+        ]);
+
+        const available = (totalIn[0]?.total || 0) - (totalOut[0]?.total || 0);
         bloodGroupsData.push({
-            bloodGroup,
-            totalIn: totalIn[0]?.total || 0,
-            totalOut: totalOut[0]?.total || 0,
-            availabe,
-        })
+          bloodGroup,
+          totalIn: totalIn[0]?.total || 0,
+          totalOut: totalOut[0]?.total || 0,
+          available,
+        });
       })
     );
+
     res.send({
       success: true,
       message: "Blood Groups Data",
-      data: [],
+      data: bloodGroupsData,
     });
   } catch (error) {
     return res.send({
