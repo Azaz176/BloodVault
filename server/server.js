@@ -1,16 +1,22 @@
-const express = require('express')
-const db= require('./config/db.js')
-const app= express()
-require('dotenv').config()
-const PORT = process.env.PORT || 8000
-app.use(express.json())
+const express = require('express');
+const db = require('./config/db.js'); // Ensure this is set up to connect to your database
+const app = express();
+require('dotenv').config();
 
-const userRoute= require('./routes/userRoutes.js')
-app.use('/api/users', userRoute)
+const PORT = process.env.PORT || 8000;
 
-const inventoryRoute= require('./routes/inventoryRoutes.js')
-app.use('/api/inventory', inventoryRoute)
+app.use(express.json());
 
-app.listen(PORT, ()=>{
-    console.log(`Server Listening at port:${PORT}`)
-})
+const userRoute = require('./routes/userRoutes.js');
+app.use('/api/users', userRoute);
+
+const inventoryRoute = require('./routes/inventoryRoutes.js');
+app.use('/api/inventory', inventoryRoute);
+
+const dashboardRoute = require('./routes/dashboardRoute.js'); 
+app.use('/api/dashboard', dashboardRoute);
+
+
+app.listen(PORT, () => {
+    console.log(`Server listening at port: ${PORT}`);
+});
