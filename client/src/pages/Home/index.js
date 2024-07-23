@@ -92,14 +92,14 @@ function Home() {
         </>
       )}
 
-      {currentUser.userType === "donar" && (
+      {currentUser.userType === "donor" && (
         <div>
           <span className="text-xl text-gray-700 font-semibold">
             Your Recent Donations
           </span>
           <InventoryTable
             filters={{
-              donar: currentUser._id,
+              donor: currentUser._id,
             }}
             limit={5}
             userType={currentUser.userType}
