@@ -104,6 +104,7 @@ function Organizations({ userType }) {
         organization: selectedOrganization?._id,
         [userType]: currentUser._id,
       }}
+      userType={userType}
     />
   </Modal>
 )}

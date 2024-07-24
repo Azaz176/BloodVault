@@ -45,15 +45,15 @@ function InventoryTable({ filters, userType, limit }) {
     },
   ];
 
-  // change columns for hospital or donor
+  
   if (userType !== "organization") {
-    // remove inventory type column
+    
     columns.splice(0, 1);
 
-    // change reference column to organization name
+    
     columns[2].title = "Organization Name";
 
-    // date column should be renamed taken date
+    
     columns[3].title = userType === "hospital" ? "Taken Date" : "Donated Date";
   }
 
