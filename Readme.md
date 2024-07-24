@@ -29,6 +29,31 @@ Blood Vault is a web-based application designed to facilitate the donation and d
 
 # PROJECT URL LINK:- [Blood Vault URL Link](https://blood-vault.onrender.com/login)
 
+## Installations
+1. Clone the repository
+   ```Bash
+   git clone https://github.com/Azaz176/Life-Blood-Bank
+   ```
+2. Navigate to the project directory:
+   ```Bash
+   cd life-blood-bank
+   ```
+3. Install dependencies:
+   ```Bash
+   npm install
+   ```
+4. Run the application
+   ```Bash
+   npm start
+   ```
+## Usage
+1. Register as a donor, hospital, or organization.
+2. Donors can log in and donate blood.
+3. Hospitals can log in and request blood.
+4. Organizations can manage the blood inventory and fulfill hospital requests.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 
 
